@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/wallach-dev/static/css/main.8182f43f.css",
-    "main.js": "/wallach-dev/static/js/main.c95bf802.js",
-    "static/js/787.c20bcbc5.chunk.js": "/wallach-dev/static/js/787.c20bcbc5.chunk.js",
-    "index.html": "/wallach-dev/index.html",
-    "main.8182f43f.css.map": "/wallach-dev/static/css/main.8182f43f.css.map",
-    "main.c95bf802.js.map": "/wallach-dev/static/js/main.c95bf802.js.map",
-    "787.c20bcbc5.chunk.js.map": "/wallach-dev/static/js/787.c20bcbc5.chunk.js.map"
+    "main.css": "/Wallach-dev/static/css/main.8182f43f.css",
+    "main.js": "/Wallach-dev/static/js/main.9c83ea1b.js",
+    "static/js/787.c20bcbc5.chunk.js": "/Wallach-dev/static/js/787.c20bcbc5.chunk.js",
+    "index.html": "/Wallach-dev/index.html",
+    "main.8182f43f.css.map": "/Wallach-dev/static/css/main.8182f43f.css.map",
+    "main.9c83ea1b.js.map": "/Wallach-dev/static/js/main.9c83ea1b.js.map",
+    "787.c20bcbc5.chunk.js.map": "/Wallach-dev/static/js/787.c20bcbc5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8182f43f.css",
-    "static/js/main.c95bf802.js"
+    "static/js/main.9c83ea1b.js"
   ]
 }
