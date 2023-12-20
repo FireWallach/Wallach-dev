@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
-import Art from '../../resources/Art';
 import './TerminalWrapper.css'
+import Art from '../../resources/Art';
 
 function TerminalWrapper(props) {
     const terminalRef = useRef(null);
