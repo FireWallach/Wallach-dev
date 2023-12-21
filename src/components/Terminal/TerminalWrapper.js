@@ -3,6 +3,7 @@ import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import './TerminalWrapper.css'
 import Art from '../../resources/Art';
+import BioLines from '../../resources/Bio';
 
 function TerminalWrapper(props) {
     const terminalRef = useRef(null);
@@ -21,15 +22,58 @@ function TerminalWrapper(props) {
 
     function printHelpText(showExplanations = false) {
         terminal.current.writeln('Existing Commands: \n');
-        terminal.current.writeln('aboutMe');
+        terminal.current.writeln('Github')
+        if (showExplanations) terminal.current.writeln('Opens Dylan\'s GitHub in another tab');
+        terminal.current.writeln('AboutMe');
         if (showExplanations) terminal.current.writeln('Prints a quick bio about the developer');
-        terminal.current.writeln('resume');
+        terminal.current.writeln('Resume');
         if (showExplanations) terminal.current.writeln('Links to developer\'s resume');
-        terminal.current.writeln('clear');
-        if (showExplanations) terminal.current.writeln('clears the terminal');
-        terminal.current.writeln('help');
-        if (showExplanations) terminal.current.writeln('assists with commands');
+        terminal.current.writeln('Clear');
+        if (showExplanations) terminal.current.writeln('Clears the terminal');
+        terminal.current.writeln('Help');
+        if (showExplanations) terminal.current.writeln('Displays Commands');
     }
+
+    function printAboutMe() {
+        BioLines.forEach(line => {
+            // Center each line by adding spaces (adjust the number as needed)
+            const paddedLine = line.padStart((80 + line.length) / 2).padEnd(80);
+            terminal.current.writeln(paddedLine);
+        });
+    }
+
+    const downloadResume = () => {
+        const link = document.createElement('a');
+        link.href = 'https://drive.google.com/uc?export=download&id=1RZtXUxDZ-qvypUNOWVPjovz1Zsl4gMfk';
+        link.download = 'Dylan-Wallach.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    function openGitHubWithMessage() {
+        let message = "Opening Dylan's GitHub in another tab";
+        let count = 0;
+
+        terminal.current.write(message); // Write the initial message
+
+        const intervalId = setInterval(() => {
+            if (count < 3) {
+                terminal.current.write('.');
+                count++;
+            } else {
+                clearInterval(intervalId);
+                window.open('https://github.com/firewallach', '_blank');
+
+                setTimeout(() => {
+                    terminal.current.writeln('\r\nSuccess!');
+                    terminal.current.write('$ ');
+                }, 100);
+            }
+        }, 250);
+    }
+
+
 
     function updateCommandLine() {
         // Clear the current line and set the cursor at the start
@@ -57,11 +101,10 @@ function TerminalWrapper(props) {
         }
     }
 
-    function initTerminalText() {
+    function initTerminalText(didClear = false) {
         terminalPaint(Art.name);
         printHelpText();
         terminal.current.write('\n');
-        terminal.current.write('$ ');
     }
 
     useEffect(() => {
@@ -81,6 +124,7 @@ function TerminalWrapper(props) {
             terminal.current.focus();
 
             initTerminalText();
+            terminal.current.write('$')
 
             // Command Handling
             terminal.current.onData(data => {
@@ -93,14 +137,18 @@ function TerminalWrapper(props) {
                     // Handle different commands
                     switch (command) {
                         case 'aboutme':
-                            terminal.current.writeln('Displaying about me...');
+                            printAboutMe();
                             break;
                         case 'resume':
-                            terminal.current.writeln('Displaying resume...');
+                            terminal.current.writeln('Downloading Resume...');
+                            downloadResume();
                             break;
                         case 'clear':
                             terminal.current.reset();
                             initTerminalText();
+                            break;
+                        case 'github':
+                            openGitHubWithMessage();
                             break;
                         case 'help':
                             printHelpText(true);
