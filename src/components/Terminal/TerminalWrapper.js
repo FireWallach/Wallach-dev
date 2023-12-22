@@ -51,6 +51,11 @@ function TerminalWrapper(props) {
         document.body.removeChild(link);
     };
 
+    function printPrompt() {
+        terminal.current.write('$ ');
+    }
+
+
     function openGitHubWithMessage() {
         let message = "Opening Dylan's GitHub in another tab";
         let count = 0;
@@ -66,12 +71,13 @@ function TerminalWrapper(props) {
                 window.open('https://github.com/firewallach', '_blank');
 
                 setTimeout(() => {
-                    terminal.current.writeln('\r\nSuccess!');
-                    terminal.current.write('$ ');
+                    terminal.current.writeln('\r\nSuccess! (If your browser blocked pop-ups, you can find it here: https://github.com/firewallach)');
+                    printPrompt();
                 }, 100);
             }
         }, 250);
     }
+
 
 
 
@@ -103,6 +109,7 @@ function TerminalWrapper(props) {
 
     function initTerminalText(didClear = false) {
         terminalPaint(Art.name);
+        terminalPaint(Art.face);
         printHelpText();
         terminal.current.write('\n');
     }
@@ -138,27 +145,30 @@ function TerminalWrapper(props) {
                     switch (command) {
                         case 'aboutme':
                             printAboutMe();
+                            printPrompt();
                             break;
                         case 'resume':
                             terminal.current.writeln('Downloading Resume...');
                             downloadResume();
+                            printPrompt();
                             break;
                         case 'clear':
                             terminal.current.reset();
                             initTerminalText();
+                            printPrompt();
                             break;
                         case 'github':
                             openGitHubWithMessage();
                             break;
                         case 'help':
                             printHelpText(true);
+                            printPrompt();
                             break;
                         default:
                             terminal.current.writeln('Unknown command - type \'help\' for commands list');
                     }
 
                     currentEntry.current = '';
-                    terminal.current.write('$ ');
                 } else if (data === '\x7f') {  // Backspace key
                     if (currentEntry.current.length) {
                         currentEntry.current = currentEntry.current.substring(0, currentEntry.current.length - 1);
