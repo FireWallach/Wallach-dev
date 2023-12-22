@@ -20,18 +20,23 @@ function TerminalWrapper(props) {
         }
     }
 
-    function printHelpText(showExplanations = false) {
+    function printHelpText() {
         terminal.current.writeln('Existing Commands: \n');
         terminal.current.writeln('Github')
-        if (showExplanations) terminal.current.writeln('Opens Dylan\'s GitHub in another tab');
+        terminal.current.writeln('Opens Dylan\'s GitHub in another tab');
         terminal.current.writeln('AboutMe');
-        if (showExplanations) terminal.current.writeln('Prints a quick bio about the developer');
+        terminal.current.writeln('Prints a quick bio about the developer');
         terminal.current.writeln('Resume');
-        if (showExplanations) terminal.current.writeln('Links to developer\'s resume');
+        terminal.current.writeln('Links to developer\'s resume');
         terminal.current.writeln('Clear');
-        if (showExplanations) terminal.current.writeln('Clears the terminal');
+        terminal.current.writeln('Clears the terminal');
         terminal.current.writeln('Help');
-        if (showExplanations) terminal.current.writeln('Displays Commands');
+        terminal.current.writeln('Displays Commands');
+    }
+
+    function printInitialCommands() {
+        terminal.current.writeln('Existing Commands: \n');
+        terminal.current.writeln('Github     AboutMe     Resume     Clear     Help');
     }
 
     function printAboutMe() {
@@ -109,8 +114,8 @@ function TerminalWrapper(props) {
 
     function initTerminalText(didClear = false) {
         terminalPaint(Art.name);
+        printInitialCommands();
         terminalPaint(Art.face);
-        printHelpText();
         terminal.current.write('\n');
     }
 
@@ -161,7 +166,7 @@ function TerminalWrapper(props) {
                             openGitHubWithMessage();
                             break;
                         case 'help':
-                            printHelpText(true);
+                            printHelpText();
                             printPrompt();
                             break;
                         default:
