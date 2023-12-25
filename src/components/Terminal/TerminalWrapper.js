@@ -4,6 +4,7 @@ import { FitAddon } from 'xterm-addon-fit';
 import './TerminalWrapper.css'
 import Art from '../../resources/Art';
 import BioLines from '../../resources/Bio';
+import { isMobile } from 'react-device-detect';
 
 function TerminalWrapper(props) {
     const terminalRef = useRef(null);
@@ -134,61 +135,65 @@ function TerminalWrapper(props) {
             terminal.current.open(terminalRef.current);
             fitAddon.fit();
             terminal.current.focus();
+            if (!isMobile) {
+                initTerminalText();
+                terminal.current.write('$')
 
-            initTerminalText();
-            terminal.current.write('$')
+                // Command Handling
+                terminal.current.onData(data => {
+                    if (data === '\r') {  // Enter key
+                        const command = currentEntry.current.toLowerCase();
+                        terminal.current.writeln('\n');
+                        commandHistory.current.unshift(currentEntry.current);
+                        historyIndex.current = -1;
 
-            // Command Handling
-            terminal.current.onData(data => {
-                if (data === '\r') {  // Enter key
-                    const command = currentEntry.current.toLowerCase();
-                    terminal.current.writeln('\n');
-                    commandHistory.current.unshift(currentEntry.current);
-                    historyIndex.current = -1;
+                        // Handle different commands
+                        switch (command) {
+                            case 'aboutme':
+                                printAboutMe();
+                                printPrompt();
+                                break;
+                            case 'resume':
+                                terminal.current.writeln('Downloading Resume...');
+                                downloadResume();
+                                printPrompt();
+                                break;
+                            case 'clear':
+                                terminal.current.reset();
+                                initTerminalText();
+                                printPrompt();
+                                break;
+                            case 'github':
+                                openGitHubWithMessage();
+                                break;
+                            case 'help':
+                                printHelpText();
+                                printPrompt();
+                                break;
+                            default:
+                                terminal.current.writeln('Unknown command - type \'help\' for commands list');
+                        }
 
-                    // Handle different commands
-                    switch (command) {
-                        case 'aboutme':
-                            printAboutMe();
-                            printPrompt();
-                            break;
-                        case 'resume':
-                            terminal.current.writeln('Downloading Resume...');
-                            downloadResume();
-                            printPrompt();
-                            break;
-                        case 'clear':
-                            terminal.current.reset();
-                            initTerminalText();
-                            printPrompt();
-                            break;
-                        case 'github':
-                            openGitHubWithMessage();
-                            break;
-                        case 'help':
-                            printHelpText();
-                            printPrompt();
-                            break;
-                        default:
-                            terminal.current.writeln('Unknown command - type \'help\' for commands list');
+                        currentEntry.current = '';
+                    } else if (data === '\x7f') {  // Backspace key
+                        if (currentEntry.current.length) {
+                            currentEntry.current = currentEntry.current.substring(0, currentEntry.current.length - 1);
+                            terminal.current.write('\b \b');
+                        }
+                    } else if (data.startsWith('\u001b[')) {  // Arrow keys
+                        handleArrowKeys(data);
+                    } else {
+                        // Echo the input data back to the terminal
+                        terminal.current.write(data);
+                        currentEntry.current += data;
                     }
-
-                    currentEntry.current = '';
-                } else if (data === '\x7f') {  // Backspace key
-                    if (currentEntry.current.length) {
-                        currentEntry.current = currentEntry.current.substring(0, currentEntry.current.length - 1);
-                        terminal.current.write('\b \b');
-                    }
-                } else if (data.startsWith('\u001b[')) {  // Arrow keys
-                    handleArrowKeys(data);
-                } else {
-                    // Echo the input data back to the terminal
-                    terminal.current.write(data);
-                    currentEntry.current += data;
-                }
-            });
+                });
+            } else {
+                terminal.current.writeln('Mobile not yet supported :(');
+            }
         }
-    }, []);
+
+    }, [isMobile]);
 
     return (
         <div ref={terminalRef} className='terminal-wrapper' />
